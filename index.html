@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>СтомаПро — Стоматологическая клиника</title>
+<style>
+  /* ===== НАСТРОЙКИ — меняй здесь ===== */
+  :root {
+    --color-primary: #2563eb;
+    --color-accent: #0ea5e9;
+    --color-dark: #0f172a;
+    --color-light: #f0f9ff;
+    --clinic-name: "СтомаПро";
+  }
+  /* ==================================== */
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Segoe UI', system-ui, sans-serif;
+    background: #fff;
+    color: var(--color-dark);
+    overflow-x: hidden;
+  }
+
+  /* — Анимации — */
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(40px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  @keyframes fadeIn {
+    from { opacity: 0; }
+    to   { opacity: 1; }
+  }
+  @keyframes pulse {
+    0%, 100% { transform: scale(1); }
+    50%       { transform: scale(1.05); }
+  }
+  @keyframes float {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-10px); }
+  }
+  @keyframes shimmer {
+    0%   { background-position: -200% center; }
+    100% { background-position: 200% center; }
+  }
+  @keyframes chatPop {
+    from { opacity: 0; transform: scale(0.8) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+
+  .animate { opacity: 0; }
+  .animate.visible { animation: fadeUp 0.7s ease forwards; }
+
+  /* — Шапка — */
+  header {
+    position: fixed; top: 0; width: 100%; z-index: 100;
+    background: rgba(255,255,255,0.92);
+    backdrop-filter: blur(12px);
+    border-bottom: 1px solid #e2e8f0;
+    display: flex; align-items: center; justify-content: space-between;
+    padding: 14px 40px;
+    animation: fadeIn 0.5s ease;
+  }
+  .logo {
+    font-size: 1.5rem; font-weight: 800;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  nav a {
+    margin-left: 28px; text-decoration: none;
+    color: #475569; font-weight: 500;
+    transition: color 0.2s;
+  }
+  nav a:hover { color: var(--color-primary); }
+  .btn-header {
+    margin-left: 28px;
+    background: var(--color-primary); color: #fff;
+    padding: 9px 22px; border-radius: 8px;
+    text-decoration: none; font-weight: 600;
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-header:hover { background: #1d4ed8; transform: translateY(-1px); }
+
+  /* — Герой — */
+  .hero {
+    min-height: 100vh;
+    background: linear-gradient(135deg, #eff6ff 0%, #e0f2fe 50%, #f0fdf4 100%);
+    display: flex; align-items: center; justify-content: center;
+    text-align: center; padding: 100px 20px 60px;
+    position: relative; overflow: hidden;
+  }
+  .hero::before {
+    content: '';
+    position: absolute; width: 600px; height: 600px;
+    background: radial-gradient(circle, rgba(37,99,235,0.08) 0%, transparent 70%);
+    top: 50%; left: 50%; transform: translate(-50%,-50%);
+    animation: pulse 4s ease infinite;
+  }
+  .hero-content { position: relative; max-width: 700px; }
+  .hero-badge {
+    display: inline-block;
+    background: linear-gradient(90deg, var(--color-primary), var(--color-accent));
+    color: #fff; padding: 6px 18px; border-radius: 20px;
+    font-size: 0.85rem; font-weight: 600; margin-bottom: 24px;
+    animation: fadeUp 0.6s ease 0.1s both;
+  }
+  .hero h1 {
+    font-size: clamp(2rem, 5vw, 3.5rem);
+    font-weight: 900; line-height: 1.1;
+    margin-bottom: 20px;
+    animation: fadeUp 0.6s ease 0.2s both;
+  }
+  .hero h1 span {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    background-size: 200% auto;
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+    animation: shimmer 3s linear infinite;
+  }
+  .hero p {
+    font-size: 1.2rem; color: #475569; margin-bottom: 36px;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .hero-buttons {
+    display: flex; gap: 16px; justify-content: center; flex-wrap: wrap;
+    animation: fadeUp 0.6s ease 0.4s both;
+  }
+  .btn-primary {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #fff; padding: 16px 36px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 700; text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.3);
+  }
+  .btn-primary:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(37,99,235,0.4); }
+  .btn-secondary {
+    background: #fff; color: var(--color-primary);
+    padding: 16px 36px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 700; text-decoration: none;
+    border: 2px solid var(--color-primary);
+    transition: background 0.2s, transform 0.2s;
+  }
+  .btn-secondary:hover { background: var(--color-light); transform: translateY(-2px); }
+  .hero-icon {
+    font-size: 5rem; margin-bottom: 20px;
+    display: block; animation: float 3s ease infinite;
+  }
+
+  /* — Статистика — */
+  .stats {
+    display: flex; justify-content: center; flex-wrap: wrap; gap: 40px;
+    padding: 50px 40px;
+    background: var(--color-dark);
+    color: #fff;
+  }
+  .stat { text-align: center; }
+  .stat-num {
+    font-size: 2.5rem; font-weight: 900;
+    background: linear-gradient(135deg, #60a5fa, #38bdf8);
+    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .stat-label { font-size: 0.9rem; color: #94a3b8; margin-top: 4px; }
+
+  /* — Услуги — */
+  .section { padding: 80px 40px; max-width: 1100px; margin: 0 auto; }
+  .section-title {
+    text-align: center; font-size: 2rem; font-weight: 800;
+    margin-bottom: 12px;
+  }
+  .section-sub {
+    text-align: center; color: #64748b; margin-bottom: 50px;
+  }
+  .services-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 24px;
+  }
+  .service-card {
+    background: #fff; border: 1px solid #e2e8f0;
+    border-radius: 16px; padding: 32px 28px;
+    transition: transform 0.3s, box-shadow 0.3s;
+    cursor: default;
+  }
+  .service-card:hover {
+    transform: translateY(-6px);
+    box-shadow: 0 20px 40px rgba(0,0,0,0.08);
+    border-color: var(--color-primary);
+  }
+  .service-icon { font-size: 2.5rem; margin-bottom: 16px; }
+  .service-card h3 { font-size: 1.2rem; font-weight: 700; margin-bottom: 8px; }
+  .service-card p { color: #64748b; line-height: 1.6; }
+  .service-price {
+    margin-top: 16px; font-weight: 700;
+    color: var(--color-primary); font-size: 1.1rem;
+  }
+
+  /* — Преимущества — */
+  .features { background: var(--color-light); padding: 80px 40px; }
+  .features-inner { max-width: 1100px; margin: 0 auto; }
+  .features-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+    gap: 32px; margin-top: 50px;
+  }
+  .feature { text-align: center; }
+  .feature-icon {
+    width: 64px; height: 64px; border-radius: 16px;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.8rem; margin: 0 auto 16px;
+  }
+  .feature h4 { font-weight: 700; margin-bottom: 8px; }
+  .feature p { color: #64748b; font-size: 0.95rem; }
+
+  /* — CTA — */
+  .cta {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #fff; text-align: center; padding: 80px 40px;
+  }
+  .cta h2 { font-size: 2rem; font-weight: 800; margin-bottom: 12px; }
+  .cta p { font-size: 1.1rem; opacity: 0.9; margin-bottom: 32px; }
+  .btn-white {
+    background: #fff; color: var(--color-primary);
+    padding: 16px 40px; border-radius: 12px;
+    font-size: 1.1rem; font-weight: 700; text-decoration: none;
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: inline-block;
+  }
+  .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
+
+  /* — Футер — */
+  footer {
+    background: var(--color-dark); color: #94a3b8;
+    text-align: center; padding: 30px;
+    font-size: 0.9rem;
+  }
+  footer span { color: #60a5fa; }
+
+  /* ===== AI ЧАТБОТ ===== */
+  .chat-btn {
+    position: fixed; bottom: 28px; right: 28px; z-index: 1000;
+    width: 60px; height: 60px; border-radius: 50%;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    border: none; cursor: pointer; font-size: 1.6rem;
+    box-shadow: 0 4px 20px rgba(37,99,235,0.5);
+    transition: transform 0.2s, box-shadow 0.2s;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .chat-btn:hover { transform: scale(1.1); box-shadow: 0 8px 30px rgba(37,99,235,0.6); }
+  .chat-btn .pulse-ring {
+    position: absolute; width: 100%; height: 100%; border-radius: 50%;
+    border: 3px solid var(--color-primary); opacity: 0;
+    animation: ringPulse 2s ease infinite;
+  }
+  @keyframes ringPulse {
+    0%   { transform: scale(1); opacity: 0.6; }
+    100% { transform: scale(1.8); opacity: 0; }
+  }
+
+  .chat-window {
+    display: none;
+    position: fixed; bottom: 100px; right: 28px; z-index: 1000;
+    width: 360px; max-width: calc(100vw - 40px);
+    background: #fff; border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    animation: chatPop 0.3s ease;
+  }
+  .chat-window.open { display: flex; flex-direction: column; }
+
+  .chat-header {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #fff; padding: 16px 20px;
+    display: flex; align-items: center; gap: 12px;
+  }
+  .chat-avatar {
+    width: 38px; height: 38px; border-radius: 50%;
+    background: rgba(255,255,255,0.2);
+    display: flex; align-items: center; justify-content: center;
+    font-size: 1.3rem;
+  }
+  .chat-header-info h4 { font-weight: 700; font-size: 0.95rem; }
+  .chat-header-info span { font-size: 0.8rem; opacity: 0.85; }
+  .chat-close {
+    margin-left: auto; background: none; border: none;
+    color: #fff; cursor: pointer; font-size: 1.3rem; opacity: 0.8;
+    transition: opacity 0.2s;
+  }
+  .chat-close:hover { opacity: 1; }
+
+  .chat-messages {
+    flex: 1; overflow-y: auto; padding: 16px;
+    max-height: 340px;
+    display: flex; flex-direction: column; gap: 12px;
+  }
+  .msg {
+    max-width: 85%; padding: 10px 14px;
+    border-radius: 14px; font-size: 0.92rem; line-height: 1.5;
+    animation: fadeUp 0.3s ease;
+  }
+  .msg.bot {
+    background: var(--color-light); color: var(--color-dark);
+    border-bottom-left-radius: 4px; align-self: flex-start;
+  }
+  .msg.user {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #fff; border-bottom-right-radius: 4px; align-self: flex-end;
+  }
+  .msg-typing {
+    display: flex; gap: 5px; align-items: center;
+    padding: 12px 16px; background: var(--color-light);
+    border-radius: 14px; border-bottom-left-radius: 4px;
+    align-self: flex-start;
+  }
+  .dot {
+    width: 7px; height: 7px; border-radius: 50%;
+    background: var(--color-primary); opacity: 0.6;
+    animation: dotBounce 1.2s ease infinite;
+  }
+  .dot:nth-child(2) { animation-delay: 0.2s; }
+  .dot:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes dotBounce {
+    0%, 100% { transform: translateY(0); }
+    50%       { transform: translateY(-6px); }
+  }
+
+  .chat-suggestions {
+    padding: 8px 16px; display: flex; flex-wrap: wrap; gap: 8px;
+  }
+  .suggestion {
+    background: var(--color-light); border: 1px solid #bfdbfe;
+    color: var(--color-primary); padding: 6px 12px; border-radius: 20px;
+    font-size: 0.82rem; cursor: pointer; transition: background 0.2s;
+    white-space: nowrap;
+  }
+  .suggestion:hover { background: #dbeafe; }
+
+  .chat-input-area {
+    padding: 12px 16px; border-top: 1px solid #e2e8f0;
+    display: flex; gap: 8px;
+  }
+  .chat-input {
+    flex: 1; padding: 10px 14px; border: 1px solid #e2e8f0;
+    border-radius: 10px; font-size: 0.92rem; outline: none;
+    transition: border-color 0.2s;
+  }
+  .chat-input:focus { border-color: var(--color-primary); }
+  .chat-send {
+    background: linear-gradient(135deg, var(--color-primary), var(--color-accent));
+    color: #fff; border: none; border-radius: 10px;
+    padding: 10px 16px; cursor: pointer; font-size: 1.1rem;
+    transition: transform 0.2s;
+  }
+  .chat-send:hover { transform: scale(1.05); }
+
+  .ai-badge {
+    text-align: center; padding: 6px;
+    font-size: 0.72rem; color: #94a3b8;
+    border-top: 1px solid #f1f5f9;
+  }
+
+  /* — Адаптив — */
+  @media (max-width: 600px) {
+    header { padding: 12px 20px; }
+    nav { display: none; }
+    .section { padding: 60px 20px; }
+    .stats { gap: 24px; padding: 40px 20px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Шапка -->
+<header>
+  <div class="logo">🦷 СтомаПро</div>
+  <nav>
+    <a href="#services">Услуги</a>
+    <a href="#features">О нас</a>
+    <a href="#contact">Контакты</a>
+    <a href="tel:+74951234567" class="btn-header">Записаться</a>
+  </nav>
+</header>
+
+<!-- Герой -->
+<section class="hero">
+  <div class="hero-content">
+    <span class="hero-icon">🦷</span>
+    <div class="hero-badge">✨ Современная стоматология</div>
+    <h1>Здоровая улыбка — <span>ваша уверенность</span></h1>
+    <p>Лечение без боли, имплантация, отбеливание и протезирование. Опытные врачи и новейшее оборудование.</p>
+    <div class="hero-buttons">
+      <a href="tel:+74951234567" class="btn-primary">📅 Записаться онлайн</a>
+      <a href="#services" class="btn-secondary">Наши услуги</a>
+    </div>
+  </div>
+</section>
+
+<!-- Статистика -->
+<div class="stats">
+  <div class="stat animate"><div class="stat-num">15+</div><div class="stat-label">лет на рынке</div></div>
+  <div class="stat animate"><div class="stat-num">8000+</div><div class="stat-label">довольных пациентов</div></div>
+  <div class="stat animate"><div class="stat-num">12</div><div class="stat-label">врачей-специалистов</div></div>
+  <div class="stat animate"><div class="stat-num">98%</div><div class="stat-label">положительных отзывов</div></div>
+</div>
+
+<!-- Услуги -->
+<section class="section" id="services">
+  <h2 class="section-title animate">Наши услуги</h2>
+  <p class="section-sub animate">Полный спектр стоматологической помощи в одной клинике</p>
+  <div class="services-grid">
+    <!-- Карточки услуг — меняй текст и цены здесь -->
+    <div class="service-card animate">
+      <div class="service-icon">🔬</div>
+      <h3>Диагностика</h3>
+      <p>Цифровой рентген, 3D-томография, панорамный снимок. Точная постановка диагноза за один визит.</p>
+      <div class="service-price">от 500 ₽</div>
+    </div>
+    <div class="service-card animate">
+      <div class="service-icon">💊</div>
+      <h3>Лечение кариеса</h3>
+      <p>Безболезненное лечение под анестезией. Световые пломбы в цвет зуба. Гарантия 2 года.</p>
+      <div class="service-price">от 2 500 ₽</div>
+    </div>
+    <div class="service-card animate">
+      <div class="service-icon">🦿</div>
+      <h3>Имплантация</h3>
+      <p>Импланты Nobel и Straumann. Пожизненная гарантия на конструкцию. Рассрочка 0%.</p>
+      <div class="service-price">от 35 000 ₽</div>
+    </div>
+    <div class="service-card animate">
+      <div class="service-icon">✨</div>
+      <h3>Отбеливание</h3>
+      <p>Система Zoom 4 — осветление до 8 тонов за 1.5 часа. Безопасно для эмали.</p>
+      <div class="service-price">от 12 000 ₽</div>
+    </div>
+    <div class="service-card animate">
+      <div class="service-icon">😁</div>
+      <h3>Брекеты и виниры</h3>
+      <p>Металлические, керамические и сапфировые брекеты. Голливудская улыбка с винирами.</p>
+      <div class="service-price">от 8 000 ₽</div>
+    </div>
+    <div class="service-card animate">
+      <div class="service-icon">👶</div>
+      <h3>Детская стоматология</h3>
+      <p>Лечение молочных зубов, герметизация, фторирование. Работаем с детьми с 3 лет.</p>
+      <div class="service-price">от 1 200 ₽</div>
+    </div>
+  </div>
+</section>
+
+<!-- Преимущества -->
+<section class="features" id="features">
+  <div class="features-inner">
+    <h2 class="section-title animate">Почему выбирают нас</h2>
+    <p class="section-sub animate">Мы заботимся о каждом пациенте</p>
+    <div class="features-grid">
+      <div class="feature animate">
+        <div class="feature-icon">🏥</div>
+        <h4>Современное оборудование</h4>
+        <p>3D-томограф, лазер, цифровой рентген от ведущих производителей</p>
+      </div>
+      <div class="feature animate">
+        <div class="feature-icon">💉</div>
+        <h4>Безболезненное лечение</h4>
+        <p>Анестезия последнего поколения. Вы ничего не почувствуете</p>
+      </div>
+      <div class="feature animate">
+        <div class="feature-icon">📋</div>
+        <h4>Гарантия на работы</h4>
+        <p>Письменная гарантия на все виды лечения от 1 до 5 лет</p>
+      </div>
+      <div class="feature animate">
+        <div class="feature-icon">🕐</div>
+        <h4>Работаем без выходных</h4>
+        <p>Пн–Вс с 9:00 до 21:00. Экстренная помощь 24/7</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA -->
+<section class="cta" id="contact">
+  <h2 class="animate">Запишитесь на бесплатную консультацию</h2>
+  <p class="animate">Первичный осмотр и составление плана лечения — бесплатно</p>
+  <a href="tel:+74951234567" class="btn-white animate">📞 +7 (495) 123-45-67</a>
+</section>
+
+<!-- Футер -->
+<footer>
+  <p>© 2026 <span>СтомаПро</span>. Все права защищены. | Лицензия № ЛО-77-01-000000</p>
+</footer>
+
+<!-- AI Чатбот -->
+<button class="chat-btn" onclick="toggleChat()" title="AI-ассистент клиники">
+  <div class="pulse-ring"></div>
+  🤖
+</button>
+
+<div class="chat-window" id="chatWindow">
+  <div class="chat-header">
+    <div class="chat-avatar">🦷</div>
+    <div class="chat-header-info">
+      <h4>Стоматолог-ассистент</h4>
+      <span>🟢 онлайн • отвечает за секунды</span>
+    </div>
+    <button class="chat-close" onclick="toggleChat()">✕</button>
+  </div>
+
+  <div class="chat-messages" id="chatMessages">
+    <div class="msg bot">Здравствуйте! 👋 Я AI-ассистент клиники СтомаПро. Помогу ответить на вопросы об услугах, ценах и записи. Спрашивайте!</div>
+  </div>
+
+  <div class="chat-suggestions" id="suggestions">
+    <div class="suggestion" onclick="sendSuggestion(this)">💰 Цены на лечение</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">📅 Как записаться?</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">🦿 Имплантация</div>
+    <div class="suggestion" onclick="sendSuggestion(this)">⏰ Время работы</div>
+  </div>
+
+  <div class="chat-input-area">
+    <input class="chat-input" id="chatInput" placeholder="Напишите вопрос..." onkeydown="if(event.key==='Enter') sendMessage()">
+    <button class="chat-send" onclick="sendMessage()">➤</button>
+  </div>
+  <div class="ai-badge">⚡ Powered by DeepSeek AI</div>
+</div>
+
+<script>
+// ===== НАСТРОЙКИ ЧАТБОТА — меняй здесь =====
+const DEEPSEEK_API_KEY = 'YOUR_DEEPSEEK_API_KEY'; // ← вставь ключ
+
+const SYSTEM_PROMPT = `Ты — вежливый AI-ассистент стоматологической клиники "СтомаПро".
+Отвечай кратко, дружелюбно и по делу на русском языке.
+
+База знаний клиники:
+- Адрес: Москва, ул. Примерная, д. 1
+- Телефон: +7 (495) 123-45-67
+- Часы работы: Пн–Вс, 9:00–21:00, экстренно 24/7
+- Услуги: лечение кариеса (от 2500₽), имплантация (от 35000₽), отбеливание Zoom (от 12000₽), брекеты (от 8000₽), детская стоматология (от 1200₽), диагностика (от 500₽)
+- Первичная консультация: бесплатно
+- Рассрочка: 0% на имплантацию
+- Гарантия: от 1 до 5 лет на все работы
+
+Если не знаешь точного ответа — предложи позвонить по номеру +7 (495) 123-45-67.
+Никогда не ставь диагнозы и не давай медицинских советов — направляй к врачу.`;
+// ============================================
+
+let chatOpen = false;
+
+function toggleChat() {
+  chatOpen = !chatOpen;
+  const win = document.getElementById('chatWindow');
+  win.classList.toggle('open', chatOpen);
+  if (chatOpen) document.getElementById('chatInput').focus();
+}
+
+function sendSuggestion(el) {
+  document.getElementById('chatInput').value = el.textContent.replace(/^[^\s]+\s/, '');
+  document.getElementById('suggestions').style.display = 'none';
+  sendMessage();
+}
+
+async function sendMessage() {
+  const input = document.getElementById('chatInput');
+  const text = input.value.trim();
+  if (!text) return;
+  input.value = '';
+
+  addMsg(text, 'user');
+  const typing = addTyping();
+
+  try {
+    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
+      },
+      body: JSON.stringify({
+        model: 'deepseek-chat',
+        messages: [
+          { role: 'system', content: SYSTEM_PROMPT },
+          { role: 'user', content: text }
+        ],
+        max_tokens: 300,
+        temperature: 0.7
+      })
+    });
+    const data = await res.json();
+    typing.remove();
+    const answer = data.choices?.[0]?.message?.content || 'Извините, произошла ошибка. Позвоните нам: +7 (495) 123-45-67';
+    addMsg(answer, 'bot');
+  } catch {
+    typing.remove();
+    addMsg('Ошибка соединения. Свяжитесь с нами: +7 (495) 123-45-67', 'bot');
+  }
+}
+
+function addMsg(text, who) {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = `msg ${who}`;
+  div.textContent = text;
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+function addTyping() {
+  const msgs = document.getElementById('chatMessages');
+  const div = document.createElement('div');
+  div.className = 'msg-typing';
+  div.innerHTML = '<div class="dot"></div><div class="dot"></div><div class="dot"></div>';
+  msgs.appendChild(div);
+  msgs.scrollTop = msgs.scrollHeight;
+  return div;
+}
+
+// Анимация при скролле
+const observer = new IntersectionObserver(entries => {
+  entries.forEach((e, i) => {
+    if (e.isIntersecting) {
+      e.target.style.animationDelay = `${i * 0.1}s`;
+      e.target.classList.add('visible');
+      observer.unobserve(e.target);
+    }
+  });
+}, { threshold: 0.15 });
+
+document.querySelectorAll('.animate').forEach(el => observer.observe(el));
+</script>
+
+</body>
+</html>
