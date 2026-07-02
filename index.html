@@ -229,6 +229,35 @@
   }
   .btn-white:hover { transform: translateY(-2px); box-shadow: 0 8px 30px rgba(0,0,0,0.2); }
 
+  /* — Форма записи — */
+  .booking-form {
+    max-width: 480px; margin: 36px auto 0;
+    background: rgba(255,255,255,0.12);
+    backdrop-filter: blur(8px);
+    border-radius: 16px; padding: 28px;
+    display: flex; flex-direction: column; gap: 14px;
+    animation: fadeUp 0.6s ease 0.3s both;
+  }
+  .booking-form input {
+    padding: 13px 16px; border-radius: 10px; border: none;
+    font-size: 1rem; outline: none;
+    transition: box-shadow 0.2s;
+  }
+  .booking-form input:focus { box-shadow: 0 0 0 3px rgba(255,255,255,0.4); }
+  .booking-form button {
+    background: var(--color-dark); color: #fff;
+    border: none; padding: 14px; border-radius: 10px;
+    font-size: 1.05rem; font-weight: 700; cursor: pointer;
+    transition: transform 0.2s, background 0.2s;
+  }
+  .booking-form button:hover { transform: translateY(-1px); background: #1e293b; }
+  .booking-form button:disabled { opacity: 0.6; cursor: not-allowed; transform: none; }
+  .booking-status {
+    font-size: 0.9rem; min-height: 20px; text-align: center;
+  }
+  .booking-status.success { color: #bbf7d0; }
+  .booking-status.error { color: #fecaca; }
+
   /* — Футер — */
   footer {
     background: var(--color-dark); color: #94a3b8;
@@ -485,6 +514,14 @@
   <h2 class="animate">Запишитесь на бесплатную консультацию</h2>
   <p class="animate">Первичный осмотр и составление плана лечения — бесплатно</p>
   <a href="tel:+74951234567" class="btn-white animate">📞 +7 (495) 123-45-67</a>
+
+  <form class="booking-form" id="bookingForm" onsubmit="return submitBooking(event)">
+    <input type="text" id="bookName" placeholder="Ваше имя" required>
+    <input type="tel" id="bookPhone" placeholder="+7 (___) ___-__-__" required>
+    <input type="text" id="bookTime" placeholder="Удобное время (например: завтра в 15:00)">
+    <button type="submit" id="bookSubmit">Записаться на консультацию</button>
+    <div class="booking-status" id="bookStatus"></div>
+  </form>
 </section>
 
 <!-- Футер -->
@@ -545,6 +582,50 @@ const SYSTEM_PROMPT = `Ты — вежливый AI-ассистент стом�
 Если не знаешь точного ответа — предложи позвонить по номеру +7 (495) 123-45-67.
 Никогда не ставь диагнозы и не давай медицинских советов — направляй к врачу.`;
 // ============================================
+
+// ===== НАСТРОЙКИ ФОРМЫ ЗАПИСИ — меняй здесь =====
+const TELEGRAM_BOT_TOKEN = '8959009607:AAG9iXM8ZEwgy3nBFoF57gWeJ8rNqtspnJo';
+const TELEGRAM_CHAT_ID   = '628574105';
+// ==================================================
+
+async function submitBooking(event) {
+  event.preventDefault();
+  const name = document.getElementById('bookName').value.trim();
+  const phone = document.getElementById('bookPhone').value.trim();
+  const time = document.getElementById('bookTime').value.trim() || 'не указано';
+  const btn = document.getElementById('bookSubmit');
+  const status = document.getElementById('bookStatus');
+
+  btn.disabled = true;
+  btn.textContent = 'Отправка...';
+  status.textContent = '';
+  status.className = 'booking-status';
+
+  const text = `🦷 Новая заявка с сайта СтомаПро\n\n👤 Имя: ${name}\n📞 Телефон: ${phone}\n🕐 Удобное время: ${time}`;
+
+  try {
+    const res = await fetch(`https://api.telegram.org/bot${TELEGRAM_BOT_TOKEN}/sendMessage`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ chat_id: TELEGRAM_CHAT_ID, text })
+    });
+    const data = await res.json();
+    if (data.ok) {
+      status.textContent = '✅ Заявка отправлена! Мы свяжемся с вами в ближайшее время.';
+      status.className = 'booking-status success';
+      document.getElementById('bookingForm').reset();
+    } else {
+      throw new Error('Telegram API error');
+    }
+  } catch {
+    status.textContent = '❌ Ошибка отправки. Позвоните нам: +7 (495) 123-45-67';
+    status.className = 'booking-status error';
+  } finally {
+    btn.disabled = false;
+    btn.textContent = 'Записаться на консультацию';
+  }
+  return false;
+}
 
 let chatOpen = false;
 
