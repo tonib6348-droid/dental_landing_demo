@@ -565,7 +565,7 @@
 
 <script>
 // ===== НАСТРОЙКИ ЧАТБОТА — меняй здесь =====
-const DEEPSEEK_API_KEY = 'YOUR_DEEPSEEK_API_KEY'; // ← вставь ключ
+const PROXY_URL = 'https://dental-proxy.tonib6348.workers.dev';
 
 const SYSTEM_PROMPT = `Ты — вежливый AI-ассистент стоматологической клиники "СтомаПро".
 Отвечай кратко, дружелюбно и по делу на русском языке.
@@ -652,14 +652,10 @@ async function sendMessage() {
   const typing = addTyping();
 
   try {
-    const res = await fetch('https://api.deepseek.com/v1/chat/completions', {
+    const res = await fetch(PROXY_URL, {
       method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${DEEPSEEK_API_KEY}`
-      },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({
-        model: 'deepseek-chat',
         messages: [
           { role: 'system', content: SYSTEM_PROMPT },
           { role: 'user', content: text }
