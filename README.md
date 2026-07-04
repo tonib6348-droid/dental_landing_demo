@@ -37,4 +37,4 @@
 
 ---
 
-*Разработка AI-сайтов под ключ. Telegram: [@ваш_ник]*
+*Разработка AI-сайтов под ключ. Telegram: [@VladMaksi543](https://t.me/VladMaksi543)*
